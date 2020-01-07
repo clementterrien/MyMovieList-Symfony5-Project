@@ -26,4 +26,24 @@ class MyMovieListController extends AbstractController
             'controller_name' => 'MyMovieListController',
         ]);
     }
+
+    /**
+     * @Route("/movies", name="movies")
+     */
+    public function movies()
+    {
+        return $this->render('my_movie_list/movies.html.twig', [
+            'controller_name' => 'MyMovieListController',
+        ]);
+    }
+
+    /**
+     * @Route("/showmovie", name="showmovie")
+     */
+    public function showMovies()
+    {
+        return $this->render('my_movie_list/showMovies.html.twig', [
+            'controller_name' => 'MyMovieListController',
+        ]);
+    }
 }

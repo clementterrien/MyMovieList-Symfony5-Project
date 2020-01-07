@@ -18,11 +18,11 @@ class MyMovieListController extends AbstractController
     }
 
     /**
-     * @Route("/home", name="home")
+     * @Route("/", name="home")
      */
     public function home()
     {
-        return $this->render('my_movie_list/index.html.twig', [
+        return $this->render('my_movie_list/home.html.twig', [
             'controller_name' => 'MyMovieListController',
         ]);
     }

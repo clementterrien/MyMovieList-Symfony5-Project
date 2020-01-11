@@ -3,21 +3,17 @@
 <section class="movies">
   {% for movie in movies %}
   <article>
-    <h2>{{ movie.title}} </h2>
+    <h2>{{ movie.title }} </h2>
     <div class="metadata">
-      Ecrit le 12/12/19 à 12:29 dans la catégorie Erotique
+      Sorti le {{ movie.releaseAt | date('d/m/y') }} à {{movie.releaseAt | date('H:i') }} dans la catégorie Erotique
     </div>
     <div class="content">
-      <img src="http://placehold.it/350x150" alt="" />
+      <img src="{{ movie.image }}" alt="" />
+      <h5 class="synopsisTitle">Synopsis</h5>
       <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque commodi
-        exercitationem labore error aliquam iure.
+        {{ movie.synopsis }}
       </p>
-      <p>
-        Suscipit saepe repudiandae maxime quia veritatis tempore earum quaerat
-        dolorum fugit laboriosam. Dolorum, sunt. Quae.
-      </p>
-      <a href="/showmovie" class="btn btn-primary">Lire la suite</a>
+      <a href="{{ path('showmovie', {'id': movie.id}) }}" class="btn btn-primary">Lire la suite</a>
     </div>
   </article>
   {% endfor %}

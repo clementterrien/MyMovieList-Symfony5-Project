@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %} {% block body %}
 
 <section class="movies">
+  {% for movie in movies %}
   <article>
-    <h2>Titre du film</h2>
+    <h2>{{ movie.title}} </h2>
     <div class="metadata">
       Ecrit le 12/12/19 à 12:29 dans la catégorie Erotique
     </div>
@@ -19,42 +20,6 @@
       <a href="/showmovie" class="btn btn-primary">Lire la suite</a>
     </div>
   </article>
-  <article>
-    <h2>Titre du film</h2>
-    <div class="metadata">
-      Ecrit le 12/12/19 à 12:29 dans la catégorie Erotique
-    </div>
-    <div class="content">
-      <img src="http://placehold.it/350x150" alt="" />
-      <p>
-        Fuga error similique ipsam consequuntur aut corrupti deleniti, harum
-        voluptatum iusto explicabo ipsa tempora quos!
-      </p>
-      <p>
-        Temporibus dolorum quia quae! Facere quisquam cum magni ex aperiam
-        possimus ab alias quae nisi!
-      </p>
-      <a href="/showmovie" class="btn btn-primary">Lire la suite</a>
-    </div>
-  </article>
-
-  <article>
-    <h2>Titre du film</h2>
-    <div class="metadata">
-      Ecrit le 12/12/19 à 12:29 dans la catégorie Erotique
-    </div>
-    <div class="content">
-      <img src="http://placehold.it/350x150" alt="" />
-      <p>
-        Fuga error similique ipsam consequuntur aut corrupti deleniti, harum
-        voluptatum iusto explicabo ipsa tempora quos!
-      </p>
-      <p>
-        Temporibus dolorum quia quae! Facere quisquam cum magni ex aperiam
-        possimus ab alias quae nisi!
-      </p>
-      <a href="/showmovie" class="btn btn-primary">Lire la suite</a>
-    </div>
-  </article>
+  {% endfor %}
 </section>
 {% endblock %}

@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Movie;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyMovieListController extends AbstractController
 {
@@ -32,8 +33,13 @@ class MyMovieListController extends AbstractController
      */
     public function movies()
     {
+        $movieRepo = $this->getDoctrine()->getRepository(Movie::class);
+
+        $Movies = $movieRepo->findAll();
+
         return $this->render('my_movie_list/movies.html.twig', [
             'controller_name' => 'MyMovieListController',
+            'movies' => $Movies
         ]);
     }
 

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use App\Repository\MovieRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -53,5 +54,14 @@ class MyMovieListController extends AbstractController
             'controller_name' => 'MyMovieListController',
             'movies' => $movies
         ]);
+    }
+
+    /**
+     * @Route("/newMovieList", name="newMovieList")
+     */
+    public function createMovieList(Request $request)
+    {
+        dump($request);
+        return $this->render('my_movie_list/newMovieList.html.twig');
     }
 }

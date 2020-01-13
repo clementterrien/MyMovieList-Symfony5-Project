@@ -5,14 +5,15 @@
   <article>
     <h2>{{ movie.title }} </h2>
     <div class="metadata">
-      Sorti le {{ movie.releaseAt | date('d/m/y') }} à {{movie.releaseAt | date('H:i') }} dans la catégorie Erotique
+      Sorti le {{ movie.release_date | date('d/m/y') }} dans la catégorie Erotique
     </div>
     <div class="content">
       <img src="{{ movie.image }}" alt="" />
       <h5 class="synopsisTitle">Synopsis</h5>
       <p>
-        {{ movie.synopsis }}
+        {{ movie.overview }}
       </p>
+      <p>{{ movie.id }}</p>
       <a href="{{ path('showmovie', {'id': movie.id}) }}" class="btn btn-primary">Lire la suite</a>
     </div>
   </article>

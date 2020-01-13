@@ -2,15 +2,15 @@
 {% block body %}
 
 <section class="movie">
-  <h2> {{ movies.title }} </h2>
+  <h2> {{ movie.title }} </h2>
   <div class="metadata">
-    Sorti le {{ movies.releaseAt | date('d/m/y') }} à {{movies.releaseAt | date('H:i') }} dans la catégorie Erotique
+    Sorti le {{ movie.release_date | date('d/m/y') }}dans la catégorie Erotique
   </div>
   <div class="movieContent">
-    <img src="{{ movies.image }}" alt="" />
+    <img src=" {{ movie.image }}" alt="" />
     <h5 class="synopsisTitle">Synopsis</h5>
     <p>
-      {{ movies.synopsis }}
+      {{ movie.overview }}
     </p>
   </div>
 </section>

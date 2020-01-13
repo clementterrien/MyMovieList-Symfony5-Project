@@ -2,11 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Movie;
+use App\Form\RegistrationType;
+use App\Repository\UserRepository;
 use App\Repository\MovieRepository;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class MyMovieListController extends AbstractController
 {
@@ -35,25 +40,49 @@ class MyMovieListController extends AbstractController
      */
     public function movies(MovieRepository $movieRepo)
     {
-        $Movies = $movieRepo->findAll();
-        dump($Movies);
+        $api_key = $this->getParameter('TMDB_API_KEY');
+        $client = HttpClient::create(['http_version' => '2.0']);
+        $request = 'https://api.themoviedb.org/3/movie/popular?api_key=' . $api_key . '&language=en-US&page=1';
+        $response = $client->request('GET', $request);
+        $content = $response->toArray();
+        $content = $content['results'];
+        dump($content);
+
+        // $content[0]['image'] = 'hello';
+
+        foreach ($content as $key => $value) {
+            $poster_path = $content[$key]['poster_path'];
+            $content[$key]['image'] = 'https://image.tmdb.org/t/p/w200/' . $poster_path;
+        }
+
+        // if ($data === false) {
+        //     var_dump(curl_error($example));
+        // }
+        // curl_close($example);
 
         return $this->render('my_movie_list/movies.html.twig', [
             'controller_name' => 'MyMovieListController',
-            'movies' => $Movies
+            'movies' => $content
         ]);
     }
 
     /**
      * @Route("/showmovie/{id}", name="showmovie")
      */
-    public function showMovies(MovieRepository $repo, $id)
+    public function showMovies($id)
     {
-        $movies = $repo->find($id);
+        $api_key = $this->getParameter('TMDB_API_KEY');
+        $client = HttpClient::create(['http_version' => '2.0']);
+        $request = 'https://api.themoviedb.org/3/movie/' . $id . '?api_key=' . $api_key . '&language=en-US';
+        $response = $client->request('GET', $request);
+        $content = $response->toArray();
+        $poster_path = $content['poster_path'];
+        $content['image'] = 'https://image.tmdb.org/t/p/w300/' . $poster_path;
+        dump($content);
 
         return $this->render('my_movie_list/showMovies.html.twig', [
             'controller_name' => 'MyMovieListController',
-            'movies' => $movies
+            'movie' => $content
         ]);
     }
 
@@ -62,7 +91,67 @@ class MyMovieListController extends AbstractController
      */
     public function createMovieList(Request $request)
     {
-        dump($request);
         return $this->render('my_movie_list/newMovieList.html.twig');
+    }
+
+    /**
+     * @Route("/random", name="random")
+     */
+    public function testAPI(Request $request)
+    {
+        return $this->render('my_movie_list/newMovieList.html.twig');
+    }
+
+    /**
+     * @Route("/myprofile", name="myprofile") 
+     */
+    public function myProfile(UserRepository $userRepo)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+        $user_id = $user->getId();
+        $modify_user = [
+            "firstname" => 0,
+            "lastname" => 0,
+            "email" => 0,
+            "password" => 0,
+        ];
+
+        $userDB = $userRepo->find($user_id);
+        return $this->render('my_movie_list/myprofile.html.twig', [
+            'user' => $userDB,
+            'modify' => $modify_user
+        ]);
+    }
+
+    /**
+     * @Route("/myprofile/modify", name="modifymyprofile") 
+     */
+    public function modifyMyProfile(UserRepository $userRepo, Request $request, UserPasswordEncoderInterface $encoder)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $user = $this->getUser();
+        $user_id = $user->getId();
+        $userDB = $userRepo->find($user_id);
+
+        $manager = $this->getDoctrine()->getManager();
+        $form = $this->createForm(RegistrationType::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $hash = $encoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($hash);
+
+            $manager->flush();
+
+            return $this->redirectToRoute('security_login');
+        }
+
+        return $this->render('my_movie_list/modifyprofile.html.twig', [
+            'form' => $form->createView(),
+            'userDB' => $userDB
+        ]);
     }
 }

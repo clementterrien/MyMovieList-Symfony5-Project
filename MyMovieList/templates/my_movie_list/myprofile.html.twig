@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>My profile</h1>
+
+<div class="information">
+    <div class="firstname-field">
+        <p>{{ user.firstname }}</p>
+    </div>
+    <div class="lastname-field">
+        <p>{{ user.lastname }}</p>
+    </div>
+    <div class="email-field">
+        <p> {{ user.email }}</p>
+    </div>
+    <button><a href="myprofile/modify">MODIFY</a></button>
+</div>
+{% endblock %}

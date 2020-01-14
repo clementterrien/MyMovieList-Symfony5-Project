@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -48,6 +50,16 @@ class User implements UserInterface
      * @Assert\EqualTo(propertyPath="password", message="Both passwords must be identical")
      */
     public $confirm_password;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Movielist", mappedBy="User")
+     */
+    private $movielists;
+
+    public function __construct()
+    {
+        $this->movielists = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -117,5 +129,36 @@ class User implements UserInterface
 
     public function getUsername()
     {
+    }
+
+    /**
+     * @return Collection|Movielist[]
+     */
+    public function getMovielists(): Collection
+    {
+        return $this->movielists;
+    }
+
+    public function addMovielist(Movielist $movielist): self
+    {
+        if (!$this->movielists->contains($movielist)) {
+            $this->movielists[] = $movielist;
+            $movielist->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovielist(Movielist $movielist): self
+    {
+        if ($this->movielists->contains($movielist)) {
+            $this->movielists->removeElement($movielist);
+            // set the owning side to null (unless already changed)
+            if ($movielist->getUser() === $this) {
+                $movielist->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

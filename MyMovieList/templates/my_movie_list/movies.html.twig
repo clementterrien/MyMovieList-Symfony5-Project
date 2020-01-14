@@ -15,6 +15,7 @@
       </p>
       <p>{{ movie.id }}</p>
       <a href="{{ path('showmovie', {'id': movie.id}) }}" class="btn btn-primary">Lire la suite</a>
+      <a href="{{ path('addtomylist', {'movie_id': movie.id})}}" class="btn btn-success">Add to MyList</a>
     </div>
   </article>
   {% endfor %}

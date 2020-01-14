@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\ListItem;
 use App\Entity\User;
 use App\Entity\Movie;
+use App\Entity\MovieList;
+use App\Form\CreateListType;
 use App\Form\RegistrationType;
+use App\Repository\MovieListRepository;
 use App\Repository\UserRepository;
 use App\Repository\MovieRepository;
 use Symfony\Component\HttpClient\HttpClient;
@@ -80,18 +84,38 @@ class MyMovieListController extends AbstractController
         $content['image'] = 'https://image.tmdb.org/t/p/w300/' . $poster_path;
         dump($content);
 
+        // INFORMATION ABOUT THE CAST
+        $request = 'https://api.themoviedb.org/3/movie/' . $id . '/credits?api_key=' . $api_key;
+        $response = $client->request('GET', $request);
+        $credits = $response->toArray();
+
+        $cast = $credits['cast'];
+        for ($i = 0; $i <= 5; $i++) {
+            $main_characters[$i] = $cast[$i]['name'];
+        };
+
+        $crew = $credits['crew'];
+        for ($i = 0; $i <= 2; $i++) {
+            $directors[$i] = $crew[$i]['name'];
+        }
+
+        $movie_info = [
+            "title" => $content['title'],
+            "image" => $content['image'],
+            "release" => $content['release_date'],
+            "duration" => $content['runtime'],
+            "resume" => $content['overview'],
+            "directors" => $directors,
+            "cast" => $main_characters,
+            'average' => $content['vote_average']
+        ];
+
+        // if 
+
         return $this->render('my_movie_list/showMovies.html.twig', [
             'controller_name' => 'MyMovieListController',
-            'movie' => $content
+            'movie' => $movie_info
         ]);
-    }
-
-    /**
-     * @Route("/newMovieList", name="newMovieList")
-     */
-    public function createMovieList(Request $request)
-    {
-        return $this->render('my_movie_list/newMovieList.html.twig');
     }
 
     /**
@@ -153,5 +177,59 @@ class MyMovieListController extends AbstractController
             'form' => $form->createView(),
             'userDB' => $userDB
         ]);
+    }
+
+
+    /**
+     * @Route("/newMovieList", name="newMovieList")
+     */
+    public function createMovieList(UserRepository $user, Request $request)
+    {
+        $list = new MovieList();
+
+        $manager = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm(CreateListType::class, $list);
+        dump($form);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            $user_id = $user->getId();
+            $list->setUserId($user_id);
+
+            $user_lists = 'hello';
+
+            $manager->persist($list);
+            $manager->flush();
+
+            return $this->render('my_movie_list/NewMovieList.html.twig', [
+                'form' => $form->createView()
+            ]);
+        }
+
+        return $this->render('my_movie_list/NewMovieList.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+    /**
+     * @Route("/newMovieList/{movie_id}", name="addtomylist")
+     */
+    public function addToMyList($movie_id)
+    {
+
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $manager = $this->getDoctrine()->getManager();
+
+        $list_Item = 'h';
+
+
+
+
+        $manager->persist($list_Item);
+        $manager->flush();
+
+        return $this->render('my_movie_list/NewMovieList.html.twig');
     }
 }

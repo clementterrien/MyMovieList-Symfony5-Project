@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %} {% block body %}
+<h1>Movies in {{ list.name }}</h1>
+<ul>
+    {% for movie in movies  %}
+    <li> {{ movie.id }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

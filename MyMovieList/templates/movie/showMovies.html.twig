@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+<section class="movie">
+  <h2> {{ movie.title }}</h2>
+  <div class="metadata">
+    Release on {{ movie.release | date('d/m/y') }}, {{ movie.duration }} minutes
+  </div>
+  <div class="movieContent">
+    <img src=" {{ movie.image }}" alt="" />
+
+    <h5 class="synopsisTitle">Synopsis</h5>
+    <p>
+      {{ movie.resume }}
+    </p>
+    <p> Actors:
+      {% for actor in movie.cast %}
+      {{ actor -}},
+      {% endfor %}
+    </p>
+
+    <p> Directors:
+      {% for director in movie.directors %}
+      {{ director -}},
+      {% endfor %}
+    </p>
+    <p>Vote Average: {{ movie.average }}</p>
+  </div>
+</section>
+
+{% endblock %}

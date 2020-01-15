@@ -196,8 +196,7 @@ class MyMovieListController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->getUser();
-            $user_id = $user->getId();
-            $list->setUserId($user_id);
+            $list->setUser($user);
 
             $user_lists = 'hello';
 

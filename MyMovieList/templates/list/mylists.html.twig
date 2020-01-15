@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %} {% block body %}
+<h1>My Lists</h1>
+<ul>
+    {% for list in lists %}
+    <li> <a href=" {{ path('showlist', {'id': list.id})}} ">{{ list.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

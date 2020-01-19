@@ -1,11 +1,18 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+<link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css" />
+<link href="{{ asset('css/base.css') }}" rel="stylesheet" />
+{% endblock %}
+
 {% block body %}
 {% if form is defined %}
-{{ form_start(form) }}
-{{ form_widget(form) }}
-<button type="submit" class="btn btn-success">Create List</button>
-{{ form_end(form) }}
+<h1>Create my own MovieList</h1>
+<div class="createlisttype">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit" class="btn btn-success">Create List</button>
+    {{ form_end(form) }}
+</div>
 {% endif %}
-<h2>Mylists</h2>
 {% endblock %}

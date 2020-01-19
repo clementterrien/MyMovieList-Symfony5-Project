@@ -1,29 +1,46 @@
-{% extends 'base.html.twig' %} {% block body %}
-
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+<link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css" />
+<link href="{{ asset('css/base.css') }}" rel="stylesheet" />
+{% endblock %}
+{% block body %}
+<h1>Top rated movies by TMDB</h1>
 <section class="movies">
   {% for movie in movies %}
+
   <article>
-    <h2>{{ movie.title }} </h2>
-    <div class="metadata">
-      Sorti le {{ movie.release_date | date('d/m/y') }} dans la catégorie Erotique
-    </div>
-    <div class="content">
+    <div class="image">
       <img src="{{ movie.image }}" alt="" />
-      <h5 class="synopsisTitle">Synopsis</h5>
+    </div>
+
+    <div class="content">
+      <h2>{{ movie.title }} </h2>
+      <div class="metadata">
+        Sorti le {{ movie.release_date | date('d/m/y') }} dans la catégorie Erotique
+      </div>
       <p>
+        <h5 class="synopsisTitle">Synopsis</h5>
         {{ movie.overview }}
       </p>
-      <p>{{ movie.id }}</p>
-      <a href="{{ path('showmovie', {'id': movie.id}) }}" class="btn btn-primary">Lire la suite</a>
-      <form action="{{ path('movies')}}" method="GET">
-        <input type="hidden" name="movie" value="{{ movie.id }}" />
-        <select name="list" id="">
-          {% for list in lists %}
-          <option value="{{ list.id }}">{{ list.name }}</option>
-          {% endfor %}
-        </select>
-        <button type="submit" class="btn btn-success">Add to my list</button>
-      </form>
+      <p id="id">{{ movie.id }}</p>
+      <div class="options">
+        <div class="more">
+          <a href="{{ path('showmovie', {'id': movie.id}) }}" class="btn btn-primary">Lire la suite</a>
+        </div>
+
+        <div class="add">
+          <form id="addlistType" action="{{ path('movies')}}" method="GET">
+            <input type="hidden" name="movie" value="{{ movie.id }}" />
+            <select name="list" id="">
+              {% for list in lists %}
+              <option value="{{ list.id }}">{{ list.name }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-success">Add to my list</button>
+          </form>
+        </div>
+
+      </div>
     </div>
   </article>
   {% endfor %}

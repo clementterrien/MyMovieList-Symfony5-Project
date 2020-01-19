@@ -1,0 +1,47 @@
+h1 {
+    padding-top: 2vmin;
+    padding-bottom: 2vmin;
+    font-size: 40px;
+}
+
+article {
+    display: flex;
+    background-color: lightgray;
+    margin-top: 4vmin;
+    margin-bottom: 2vmin;
+    padding-right: 2vmin;
+    border-radius : 30px 30px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    padding-left: 4vmin;
+    padding-top: 2vmin;
+    justify-content: space-between;
+}
+
+.add {
+    margin-bottom: 2vmin;
+}
+
+#id {
+    display: none;
+}
+
+#addlistType {
+    margin-left: 10vmin;
+}
+
+img {
+    border-radius : 20px 0px 0px 20px;
+}
+
+.options {
+    display: flex;
+    margin-bottom: 0;
+}
+
+.createlisttype {
+    margin-top: 5vmin;
+}

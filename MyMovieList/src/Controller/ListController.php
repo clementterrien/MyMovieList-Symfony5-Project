@@ -39,12 +39,12 @@ class ListController extends AbstractController
             $manager->persist($list);
             $manager->flush();
 
-            return $this->render('my_movie_list/NewMovieList.html.twig', [
+            return $this->render('list/newMovieList.html.twig', [
                 'form' => $form->createView()
             ]);
         }
 
-        return $this->render('list/NewMovieList.html.twig', [
+        return $this->render('list/newMovieList.html.twig', [
             'form' => $form->createView()
         ]);
     }

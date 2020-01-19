@@ -37,6 +37,11 @@ class Movielist
      */
     private $movies;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
 
     public function __construct()
     {
@@ -130,6 +135,18 @@ class Movielist
                 $movie->setMovieList(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

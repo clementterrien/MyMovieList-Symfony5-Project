@@ -1,8 +1,10 @@
 {% extends 'base.html.twig' %} {% block body %}
 <h1>My Lists</h1>
-<ul>
-    {% for list in lists %}
-    <li> <a href=" {{ path('showlist', {'id': list.id})}} ">{{ list.name }}</a></li>
-    {% endfor %}
-</ul>
+{% for list in lists %}
+<div class="list">
+    <a href=" {{ path('showlist', {'id': list.id})}} ">{{ list.name }}</a>
+    <button href=" {{ path('modifylist', {'id': list.id})}} "> EDIT</button>
+
+</div>
+{% endfor %}
 {% endblock %}

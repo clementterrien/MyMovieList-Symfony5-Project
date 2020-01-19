@@ -1,25 +1,41 @@
-{% extends 'base.html.twig' %} {% block body %}
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+<link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css" />
+<link href="{{ asset('css/base.css') }}" rel="stylesheet" />
+{% endblock %}
+{% block body %}
 <h1>Movies in {{ list.name }}</h1>
 <ul>
     {% for movie in movies  %}
     <article>
-        <h2>{{ movie.title }} </h2>
-        <div class="metadata">
-            Sorti le {{ movie.releaseAt | date('d/m/y') }} dans la catégorie Erotique
-        </div>
-        <div class="content">
+        <div class="img">
             <img src="{{ movie.image }}" alt="" />
-            <h5 class="synopsisTitle">Synopsis</h5>
+        </div>
+
+        <div class="content">
+            <h2>{{ movie.title }} </h2>
+            <div class="metadata">
+                Sorti le {{ movie.releaseAt | date('d/m/y') }} dans la catégorie Erotique
+            </div>
             <p>
+                <h5 class="synopsisTitle">Synopsis</h5>
                 {{ movie.synopsis }}
             </p>
-            <p>{{ movie.id }}</p>
-            <a href="{{ path('showmovie', {'id': movie.id}) }}" class="btn btn-primary">Lire la suite</a>
-            <form action="{{ path('showlist', {'id': list.id}) }}" method="GET">
-                <input type="hidden" name="movie" value="{{ movie.id }}" />
-                <input type="hidden" name="list" value="{{ list.id }}" />
-                <button type="submit" class="btn btn-danger">Remove from this list</button>
-            </form>
+            <p id="id">{{ movie.id }}</p>
+            <div class="options">
+                <div class="more">
+                    <a href="{{ path('showmovie', {'id': movie.id}) }}" class="btn btn-primary">Lire la suite</a>
+                </div>
+
+                <div class="add">
+                    <form name="removefromlist " action="{{ path('showlist', {'id': list.id}) }}" method="GET">
+                        <input type="hidden" name="movie" value="{{ movie.id }}" />
+                        <input type="hidden" name="list" value="{{ list.id }}" />
+                        <button type="submit" class="btn btn-danger">Remove from this list</button>
+                    </form>
+                </div>
+
+            </div>
         </div>
     </article>
     {% endfor %}

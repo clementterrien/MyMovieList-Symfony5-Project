@@ -37,8 +37,6 @@ class SearchController extends AbstractController
             $content[$key]['image'] = 'https://image.tmdb.org/t/p/w200/' . $poster_path;
         }
 
-        dump($content);
-
         $all_lists = $listRepo->findAll();
 
         return $this->render('search/search.html.twig', [

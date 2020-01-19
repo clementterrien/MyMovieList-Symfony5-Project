@@ -2,16 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\ListItem;
-use App\Entity\User;
-use App\Entity\Movie;
-use App\Entity\MovieList;
-use App\Form\CreateListType;
 use App\Form\RegistrationType;
-use App\Repository\MovieListRepository;
 use App\Repository\UserRepository;
-use App\Repository\MovieRepository;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -93,54 +85,4 @@ class MyMovieListController extends AbstractController
             'userDB' => $userDB
         ]);
     }
-
-
-    /**
-     * @Route("/newMovieList", name="newMovieList")
-     */
-    public function createMovieList(UserRepository $user, Request $request)
-    {
-        $list = new MovieList();
-
-        $manager = $this->getDoctrine()->getManager();
-
-        $form = $this->createForm(CreateListType::class, $list);
-        dump($form);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser();
-            $list->setUser($user);
-
-            $user_lists = 'hello';
-
-            $manager->persist($list);
-            $manager->flush();
-
-            return $this->render('my_movie_list/NewMovieList.html.twig', [
-                'form' => $form->createView()
-            ]);
-        }
-
-        return $this->render('my_movie_list/NewMovieList.html.twig', [
-            'form' => $form->createView()
-        ]);
-    }
-
-    // /**
-    //  * @Route('/search', name="search")
-    //  */
-    // public function searchBy(Request $request)
-    // {
-    //     $keyword = 'hello';
-    //     $api_key = $this->getParameter('TMDB_API_KEY');
-    //     $client = HttpClient::create(['http_version' => '2.0']);
-    //     $query = "https://api.themoviedb.org/3/search/" . $keyword . "?api_key=" . $api_key . "&page=1";
-    //     $response = $client->request('GET', $request);
-
-    //     $this->render('my_movie_list/search.html.twig', [
-    //         'response' => $response
-    //     ]);
-    // }
 }

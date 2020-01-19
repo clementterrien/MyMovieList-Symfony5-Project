@@ -161,7 +161,7 @@ class Movie
         $response = $client->request('GET', $request);
         $query_movie = $response->toArray();
         $poster_path = $query_movie['poster_path'];
-        $query_movie['image'] = 'https://image.tmdb.org/t/p/w300/' . $poster_path;
+        $query_movie['image'] = 'https://image.tmdb.org/t/p/200/' . $poster_path;
 
         return $query_movie;
     }

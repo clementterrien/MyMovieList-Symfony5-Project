@@ -15,7 +15,15 @@
       </p>
       <p>{{ movie.id }}</p>
       <a href="{{ path('showmovie', {'id': movie.id}) }}" class="btn btn-primary">Lire la suite</a>
-      <a href="{{ path('addtomylist', {'movie_id': movie.id})}}" class="btn btn-success">Add to a list</a>
+      <form action="{{ path('movies')}}" method="GET">
+        <input type="hidden" name="movie" value="{{ movie.id }}" />
+        <select name="list" id="">
+          {% for list in lists %}
+          <option value="{{ list.id }}">{{ list.name }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-success">Add to my list</button>
+      </form>
     </div>
   </article>
   {% endfor %}

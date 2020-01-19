@@ -28,7 +28,7 @@
           <a class="nav-link" href="{{ path('newMovieList') }}">Creer une Liste</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="">Random</a>
+          <a class="nav-link" href="{{ path('showmylists') }}">My lists</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Pricing</a>
@@ -52,12 +52,17 @@
           <a href="{{ path('security_logout') }}">Logout</a>
         </button>
         {% endif %}
-        <form class=" form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search" />
-          <button class="btn btn-secondary my-2 my-sm-0" type="submit">
-            Search
-          </button>
-        </form>
+        <div class="searchbar">
+          <form action="{{ path('search') }}" class="form-inline my-2 my-lg-0" method="POST">
+            <input name="search" class="form-control mr-sm-2" type="text" placeholder="Search" />
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit">
+              Search
+            </button>
+          </form>
+        </div>
+
+
+        -->
     </div>
   </nav>
   <div class="container">

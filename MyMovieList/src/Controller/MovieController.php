@@ -2,51 +2,64 @@
 
 namespace App\Controller;
 
-use App\Repository\MovieRepository;
+use App\Entity\Movie;
+use App\Form\AddToListType;
+use App\Repository\MovielistRepository;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MovieController extends AbstractController
 {
     /**
-     * @Route("/movie", name="movie")
-     */
-    public function index()
-    {
-        return $this->render('movie/index.html.twig', [
-            'controller_name' => 'MovieController',
-        ]);
-    }
-
-    /**
      * @Route("/movies", name="movies")
      */
-    public function movies(MovieRepository $movieRepo)
+    public function movies(MovielistRepository $listRepo, Request $http_request)
     {
+
         $api_key = $this->getParameter('TMDB_API_KEY');
         $client = HttpClient::create(['http_version' => '2.0']);
         $request = 'https://api.themoviedb.org/3/movie/popular?api_key=' . $api_key . '&language=en-US&page=1';
         $response = $client->request('GET', $request);
         $content = $response->toArray();
         $content = $content['results'];
-        dump($content);
-
-        // $content[0]['image'] = 'hello';
 
         foreach ($content as $key => $value) {
             $poster_path = $content[$key]['poster_path'];
             $content[$key]['image'] = 'https://image.tmdb.org/t/p/w200/' . $poster_path;
         }
 
+
+        if ($http_request->isMethod('get') && $http_request->query->get('list') !== null) {
+            $list_query = $http_request->query->get('list');
+            $list = $listRepo->findOneBy(['id' => $list_query]);
+            $movie_id_url = $http_request->query->get('movie');
+
+            $movie = new Movie();
+            $infos = $movie->getInfoInDB($movie_id_url);
+            $movie->setAllInfo($infos, $list);
+
+            $manager = $this->getDoctrine()->getManager();
+
+            $manager->persist($movie);
+            $manager->flush();
+
+            return $this->redirectToRoute('movies');
+        }
+
+        $all_lists = $listRepo->findAll();
+
         // if ($data === false) {
         //     var_dump(curl_error($example));
         // }
         // curl_close($example);
 
+
         return $this->render('movie/movies.html.twig', [
             'controller_name' => 'MyMovieListController',
-            'movies' => $content
+            'lists' => $all_lists,
+            'movies' => $content,
         ]);
     }
 
@@ -96,5 +109,19 @@ class MovieController extends AbstractController
             'controller_name' => 'MyMovieListController',
             'movie' => $movie_info
         ]);
+    }
+
+    /**
+     * @Route("/show/{id}{movie}", methods={"GET","HEAD"}, name="showmovie2")
+     */
+    public function showMovies2($id, $movie1, Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();
+
+        $movie = new Movie();
+        $list = $request->query->get('list');
+
+
+        return $this->redirectToRoute('movies');
     }
 }

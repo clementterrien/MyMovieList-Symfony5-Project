@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Listitem;
+use App\Entity\Movie;
 use App\Entity\Movielist;
 use App\Form\CreateListType;
+use App\Form\AddToListType;
 use App\Repository\UserRepository;
-use App\Repository\ListitemRepository;
 use App\Repository\MovielistRepository;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,32 +52,25 @@ class ListController extends AbstractController
     /**
      * @Route("/newMovieList/{movie_id}", name="addtomylist")
      */
-    public function addToMyList(MovielistRepository $repo, ListitemRepository $list_Item, $movie_id)
+    public function addToMyList(MovielistRepository $repo, $movie_id)
     {
-
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $api_key = $this->getParameter('TMDB_API_KEY');
         $manager = $this->getDoctrine()->getManager();
-
         $user = $this->getUser();
 
-        $movie_list = $repo->find(1);
-        dump($movie_list);
+        $movie_list = $repo->findOneById(1);
+        $movie = $movie_list->setMovieInformation($repo, $movie_id, $api_key);
 
-        $list_Item = new Listitem();
-
-        $list_Item->setMovielist($movie_list);
-        $list_Item->setMovieId($movie_id);
-
-        $manager->persist($list_Item);
+        $manager->persist($movie);
         $manager->flush();
 
-        return $this->render('list/NewMovieList.html.twig');
+        return $this->redirectToRoute('movies');
     }
 
     /**
      * @Route("/mylists", name="showmylists")
      */
-
     public function showMyLists(MovielistRepository $repo)
     {
         $user = $this->getUser();
@@ -93,23 +86,44 @@ class ListController extends AbstractController
      * @Route("/mylist/{id}", name="showlist")
      */
 
-    public function showList(MovielistRepository $repo, $id)
+    public function showList(MovielistRepository $repo, $id, request $http_request)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $movie_list = $repo->find($id);
-        $movies = $movie_list->getListitems();
-        dump($movies);
 
-        $api_key = $this->getParameter('TMDB_API_KEY');
-        $client = HttpClient::create(['http_version' => '2.0']);
-        $request = 'https://api.themoviedb.org/3/movie/' . $id . '?api_key=' . $api_key . '&language=en-US';
-        $response = $client->request('GET', $request);
-        $content = $response->toArray();
+        $movie_list = $repo->findOneBy(['id' => $id]);
+        $movies = $movie_list->getMovies();
+
+        if (($http_request->isMethod('get') && $http_request->query->get('movie') !== null)) {
+            $list = $this->getDoctrine()->getRepository(Movielist::class)->findOneBy(['id' => $http_request->query->get('list')]);
+            $movie = $this->getDoctrine()->getRepository(Movie::class)->findOneBy(['id' => $http_request->query->get('movie')]);
+
+            $list->removeMovie($movie);
+            $manager = $this->getDoctrine()->getManager();
+
+            $manager->persist($list);
+            $manager->remove($movie);
+            $manager->flush();
+
+            return $this->redirectToRoute('showlist', ['id' => $id]);
+        }
+
 
         return $this->render('list/showlist.html.twig', [
             'movies' => $movies,
             'list' => $movie_list
         ]);
+    }
+
+    /**
+     * @Route("/mylist/remove/{id}", name="removelist")
+     */
+    public function removeFromList(request $request, $id)
+    {
+        dump('hello');
+
+        $list_id = '';
+        return $this->redirectToRoute('showlist', ['id' => $id]);
+        dump($currentRoute);
     }
 }

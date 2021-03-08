@@ -3,7 +3,8 @@
 {% for list in lists %}
 <div class="list">
     <a href=" {{ path('showlist', {'id': list.id})}} ">{{ list.name }}</a>
-    <button href=" {{ path('modifylist', {'id': list.id})}} "> EDIT</button>
+    {# <button href=" {{ path('modifylist', {'id': list.id})}} "> EDIT</button> #}
+    <button href="#"> EDIT</button>
 
 </div>
 {% endfor %}
